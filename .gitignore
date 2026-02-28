@@ -1,0 +1,35 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Go
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of go coverage tool
+*.out
+
+# Go workspace file
+go.work.sum
+
+# Dependency directories (uncomment if not using modules)
+# vendor/
+
+# Build output
+bin/
+dist/
+
+# Environment files
+.env
+.env.local
