@@ -14,6 +14,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /", app.HandleHome)
+	mux.HandleFunc("GET /posts/{slug}", app.HandlePost)
 
 	srv := &http.Server{
 		Addr:         ":" + port,
