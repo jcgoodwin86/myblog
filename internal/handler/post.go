@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/jcgoodwin/myblog/internal/model"
+	"github.com/jcgoodwin/myblog/templates/pages"
 )
 
 func (app App) HandlePost(w http.ResponseWriter, r *http.Request) {
@@ -17,10 +18,9 @@ func (app App) HandlePost(w http.ResponseWriter, r *http.Request) {
 
 	postData, err := model.LoadPost(slug)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("500 Error"))
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
-	w.Write([]byte(postData.Content))
+	pages.Post(*postData).Render(r.Context(), w)
 }

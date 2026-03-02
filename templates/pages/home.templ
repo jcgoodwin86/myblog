@@ -1,5 +1,9 @@
 package pages
 
+import "github.com/jcgoodwin/myblog/templates/layout"
+
 templ Home() {
-	<div>Home</div>
+	@layout.Layout("Home") {
+		<div>Home</div>
+	}
 }

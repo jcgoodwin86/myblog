@@ -1,0 +1,9 @@
+package components
+
+import "html/template"
+
+templ Markdown(html template.HTML) {
+	<div>
+		@templ.Raw(string(html))
+	</div>
+}

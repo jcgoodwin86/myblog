@@ -8,5 +8,8 @@ import (
 
 func (app App) HandleHome(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	pages.Home().Render(r.Context(), w)
+
+	if err := pages.Home().Render(r.Context(), w); err != nil {
+		http.Error(w, "Error rendering template", http.StatusInternalServerError)
+	}
 }

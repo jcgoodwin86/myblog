@@ -1,0 +1,15 @@
+package pages
+
+import (
+	"github.com/jcgoodwin/myblog/internal/model"
+	"github.com/jcgoodwin/myblog/templates/components"
+	"github.com/jcgoodwin/myblog/templates/layout"
+)
+
+templ Post(postData model.Post) {
+	@layout.Layout(postData.Title) {
+		<article>
+			@components.Markdown(postData.Content)
+		</article>
+	}
+}
