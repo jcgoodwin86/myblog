@@ -6,9 +6,13 @@ import (
 	"time"
 
 	"github.com/jcgoodwin/myblog/internal/handler"
+	"github.com/jcgoodwin/myblog/internal/model"
 )
 
 func main() {
+	// Prerender all the posts pages
+	model.LoadAllPosts()
+
 	port := "8080"
 	app := handler.App{}
 	mux := http.NewServeMux()

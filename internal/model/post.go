@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/jcgoodwin/myblog/internal/render"
@@ -21,8 +23,24 @@ type Post struct {
 	Content     template.HTML // rendered HTML from markdown
 }
 
+type postCache struct {
+	mu    sync.RWMutex
+	posts map[string]*Post
+}
+
+var cache = &postCache{posts: make(map[string]*Post)}
+var post_location string = "content/posts"
+
 func LoadPost(slug string) (*Post, error) {
-	path := filepath.Join("content/posts", slug+".md")
+	// Check if post exists
+	cache.mu.RLock()
+	post, ok := cache.posts[slug]
+	cache.mu.RUnlock()
+	if ok {
+		return post, nil
+	}
+
+	path := filepath.Join(post_location, slug+".md")
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -39,6 +57,10 @@ func LoadPost(slug string) (*Post, error) {
 	postData, _ := postFromMeta(metaData)
 	postData.Slug = slug
 	postData.Content = template.HTML(buf.String())
+
+	cache.mu.Lock()
+	cache.posts[postData.Slug] = postData
+	cache.mu.Unlock()
 
 	return postData, nil
 }
@@ -71,4 +93,34 @@ func postFromMeta(meta map[string]interface{}) (*Post, error) {
 	}
 
 	return &newPost, nil
+}
+
+func LoadAllPosts() error {
+	entries, err := os.ReadDir(post_location)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		fileName := entry.Name()
+		slug := strings.TrimSuffix(fileName, ".md")
+		_, err := LoadPost(slug)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func GetAllPosts() []*Post {
+	cache.mu.RLock()
+	defer cache.mu.RUnlock()
+	// now safely read from cache.posts
+	var posts []*Post
+	for _, post := range cache.posts {
+		posts = append(posts, post)
+	}
+
+	return posts
 }
