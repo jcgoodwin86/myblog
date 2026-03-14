@@ -1,7 +1,7 @@
 ---
-title: "My First Post"
-date: 2026-02-28
-tags:
+title: "My Second Post"
+date: 2026-03-10
+tags: 
   - go
   - web
 author: "Joe Goodwin"

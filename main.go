@@ -11,7 +11,9 @@ import (
 
 func main() {
 	// Prerender all the posts pages
-	model.LoadAllPosts()
+	if err := model.LoadAllPosts(); err != nil {
+		log.Fatal(err)
+	}
 
 	port := "8080"
 	app := handler.App{}

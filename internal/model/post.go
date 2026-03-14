@@ -2,6 +2,8 @@ package model
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"html/template"
 	"os"
 	"path/filepath"
@@ -20,6 +22,7 @@ type Post struct {
 	Date        time.Time
 	Description string
 	Tags        []string
+	Author      string
 	Content     template.HTML // rendered HTML from markdown
 }
 
@@ -54,7 +57,10 @@ func LoadPost(slug string) (*Post, error) {
 
 	metaData := meta.Get(context)
 
-	postData, _ := postFromMeta(metaData)
+	postData, err := postFromMeta(metaData)
+	if err != nil {
+		return nil, err
+	}
 	postData.Slug = slug
 	postData.Content = template.HTML(buf.String())
 
@@ -69,27 +75,43 @@ func postFromMeta(meta map[string]interface{}) (*Post, error) {
 	newPost := Post{}
 
 	title, ok := meta["title"].(string)
-	if ok {
-		newPost.Title = title
+	if !ok || title == "" {
+		return nil, errors.New("post title is required")
+	}
+	newPost.Title = title
+
+	date, ok := meta["date"].(string)
+	if !ok || date == "" {
+		return nil, errors.New("post date is required")
+	}
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return nil, fmt.Errorf("invalid date format: %w", err)
+	}
+	newPost.Date = parsedDate
+
+	rawTags, ok := meta["tags"].([]interface{})
+	if !ok || len(rawTags) == 0 {
+		return nil, errors.New("tags are required")
+	}
+	for _, t := range rawTags {
+		tag, ok := t.(string)
+		if !ok {
+			return nil, errors.New("invalid tag value")
+		}
+		newPost.Tags = append(newPost.Tags, tag)
 	}
 
+	author, ok := meta["author"].(string)
+	if !ok || author == "" {
+		return nil, errors.New("author are required")
+	}
+	newPost.Author = author
+
+	// optional fields
 	description, ok := meta["description"].(string)
 	if ok {
 		newPost.Description = description
-	}
-
-	date, ok := meta["date"].(string)
-	if ok {
-		parsedDate, err := time.Parse("2006-01-02", date)
-		if err != nil {
-			return nil, err
-		}
-		newPost.Date = parsedDate
-	}
-
-	tags, ok := meta["tags"].([]string)
-	if ok {
-		newPost.Tags = tags
 	}
 
 	return &newPost, nil

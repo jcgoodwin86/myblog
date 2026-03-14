@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -18,6 +19,7 @@ func (app App) HandlePost(w http.ResponseWriter, r *http.Request) {
 
 	postData, err := model.LoadPost(slug)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
