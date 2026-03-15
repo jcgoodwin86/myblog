@@ -8,7 +8,12 @@ templ Layout(title string) {
 			<title>OddCodeOut - { title }</title>
 		</head>
 		<body>
-			{ children... }
+			<wa-page>
+				<header slot="header">
+					<span>OddCodeOut</span>
+				</header>
+				{ children... }
+			</wa-page>
 		</body>
 	</html>
 }

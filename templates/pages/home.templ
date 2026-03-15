@@ -1,9 +1,15 @@
 package pages
 
 import "github.com/jcgoodwin/myblog/templates/layout"
+import "github.com/jcgoodwin/myblog/templates/components"
+import "github.com/jcgoodwin/myblog/internal/model"
 
-templ Home() {
+templ Home(posts []*model.Post) {
 	@layout.Layout("Home") {
-		<div>Home</div>
+		<div class="wa-stack wa-gap-2xl" style="max-width: 60ch; margin: 0 auto;">
+			for _, post := range posts {
+				@components.Card(*post)
+			}
+		</div>
 	}
 }

@@ -1,0 +1,21 @@
+package components
+
+import "github.com/jcgoodwin/myblog/internal/model"
+
+templ Card(post model.Post) {
+	<article class="wa-stack wa-gap-s">
+		<section class="wa-stack wa-gap-xs">
+			<div class="wa-flex-wrap wa-gap-s wa-align-items-stretch">
+				<h3 class="wa-heading-xl" style="margin: 0"><a href={ "/posts/" + post.Slug } class="wa-link-plain">{ post.Title }</a></h3>
+				<span class="wa-caption-s">{ post.Date.Format("January 2, 2006") }</span>
+			</div>
+			<span class="wa-caption-s">
+				by
+				<strong><em><a href="#">{ post.Author }</a></em></strong>
+			</span>
+		</section>
+		<p>"You can't have your cake and eat it too"... This one needs to be buried in a shallow grave.</p>
+		<a href={ "/posts/" + post.Slug } class="wa-cluster wa-gap-2xs"><span>Read More</span><wa-icon name="angle-right"></wa-icon></a>
+		<wa-divider></wa-divider>
+	</article>
+}
