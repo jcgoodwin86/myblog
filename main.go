@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/jcgoodwin/myblog/internal/handler"
@@ -15,7 +16,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	port := "8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	app := handler.App{}
 	mux := http.NewServeMux()
 
