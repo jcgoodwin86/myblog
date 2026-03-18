@@ -26,6 +26,7 @@ func main() {
 
 	mux.HandleFunc("GET /", app.HandleHome)
 	mux.HandleFunc("GET /posts/{slug}", app.HandlePost)
+	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	srv := &http.Server{
 		Addr:         ":" + port,

@@ -6,12 +6,13 @@ templ Layout(title string) {
 		<head>
 			<script src="https://kit.webawesome.com/c459e807ca5346da.js" crossorigin="anonymous"></script>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<link rel="stylesheet" href="/static/css/layout/layout.css"/>
 			<title>OddCodeOut - { title }</title>
 		</head>
 		<body>
 			<wa-page>
 				<header slot="header">
-					<span>OddCodeOut</span>
+					<span class="wa-heading-l"><a class="wa-link-plain" href="/">OddCodeOut</a></span>
 				</header>
 				{ children... }
 			</wa-page>

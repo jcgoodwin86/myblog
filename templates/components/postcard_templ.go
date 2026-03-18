@@ -31,46 +31,46 @@ func Card(post model.Post) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article class=\"wa-stack wa-gap-s\"><section class=\"wa-stack wa-gap-xs\"><div class=\"wa-flex-wrap wa-gap-s wa-align-items-stretch\"><h3 class=\"wa-heading-xl\" style=\"margin: 0\"><a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article class=\"wa-stack wa-gap-s\"><section class=\"wa-stack wa-gap-xs\"><span class=\"wa-caption-s\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 templ.SafeURL
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinURLErrs("/posts/" + post.Slug)
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(post.Date.Format("January 2, 2006"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/components/postcard.templ`, Line: 9, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/components/postcard.templ`, Line: 8, Col: 67}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" class=\"wa-link-plain\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</span><div class=\"wa-flex-wrap wa-gap-s wa-align-items-stretch\"><h3 class=\"wa-heading-2xl\" style=\"margin: 0\"><a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
+		var templ_7745c5c3_Var3 templ.SafeURL
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs("/posts/" + post.Slug)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/components/postcard.templ`, Line: 9, Col: 116}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/components/postcard.templ`, Line: 10, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></h3><span class=\"wa-caption-s\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" class=\"wa-link-plain\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(post.Date.Format("January 2, 2006"))
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/components/postcard.templ`, Line: 10, Col: 68}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/components/postcard.templ`, Line: 10, Col: 117}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</span></div><span class=\"wa-caption-s\">by <strong><em><a href=\"#\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</a></h3></div><span class=\"wa-caption-s\">by <strong><em><a href=\"#\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

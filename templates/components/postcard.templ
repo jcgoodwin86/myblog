@@ -5,9 +5,9 @@ import "github.com/jcgoodwin/myblog/internal/model"
 templ Card(post model.Post) {
 	<article class="wa-stack wa-gap-s">
 		<section class="wa-stack wa-gap-xs">
+			<span class="wa-caption-s">{ post.Date.Format("January 2, 2006") }</span>
 			<div class="wa-flex-wrap wa-gap-s wa-align-items-stretch">
-				<h3 class="wa-heading-xl" style="margin: 0"><a href={ "/posts/" + post.Slug } class="wa-link-plain">{ post.Title }</a></h3>
-				<span class="wa-caption-s">{ post.Date.Format("January 2, 2006") }</span>
+				<h3 class="wa-heading-2xl" style="margin: 0"><a href={ "/posts/" + post.Slug } class="wa-link-plain">{ post.Title }</a></h3>
 			</div>
 			<span class="wa-caption-s">
 				by
