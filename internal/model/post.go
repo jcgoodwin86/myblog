@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -138,11 +139,16 @@ func LoadAllPosts() error {
 func GetAllPosts() []*Post {
 	cache.mu.RLock()
 	defer cache.mu.RUnlock()
-	// now safely read from cache.posts
+
 	var posts []*Post
 	for _, post := range cache.posts {
 		posts = append(posts, post)
 	}
+
+	// Orders the list from newest to oldest
+	sort.Slice(posts, func(i, j int) bool {
+		return posts[j].Date.Before(posts[i].Date)
+	})
 
 	return posts
 }
