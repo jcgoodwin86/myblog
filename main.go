@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"time"
@@ -15,6 +16,9 @@ func main() {
 	if err := model.LoadAllPosts(); err != nil {
 		log.Fatal(err)
 	}
+
+	mime.AddExtensionType(".css", "text/css; charset=utf-8")
+	mime.AddExtensionType(".js", "application/javascript")
 
 	port := os.Getenv("PORT")
 	if port == "" {
