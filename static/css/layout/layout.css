@@ -1,7 +1,15 @@
-pre {
-    overflow-x: auto;
+header {
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(
+        --wa-color-surface-default
+    ); /* prevent content showing through */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* subtle shadow when scrolling */
 }
 
-code {
-    word-break: break-word;
+main {
+    margin-block: 4rem;
+    margin-inline: 2rem;
 }

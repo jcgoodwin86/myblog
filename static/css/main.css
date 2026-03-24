@@ -1,0 +1,4 @@
+@import "./layout/layout.css";
+@import "./components/nav.css";
+@import "./pages/home.css";
+@import "./pages/posts.css";
