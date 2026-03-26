@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jcgoodwin/myblog/internal/handler"
+	"github.com/jcgoodwin/myblog/internal/middleware"
 	"github.com/jcgoodwin/myblog/internal/model"
 )
 
@@ -34,7 +35,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:         ":" + port,
-		Handler:      mux,
+		Handler:      middleware.SetContentType(mux),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

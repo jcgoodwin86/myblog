@@ -15,7 +15,7 @@ templ Card(post model.Post) {
 			</span>
 		</section>
 		<p>"You can't have your cake and eat it too"... This one needs to be buried in a shallow grave.</p>
-		<a href={ "/posts/" + post.Slug } class="wa-cluster wa-gap-2xs"><span>Read More</span><wa-icon name="angle-right"></wa-icon></a>
+		<a href={ templ.SafeURL("/posts/" + post.Slug) } class="wa-cluster wa-gap-2xs"><span>Read More</span><wa-icon name="angle-right"></wa-icon></a>
 		<wa-divider></wa-divider>
 	</article>
 }

@@ -8,7 +8,10 @@ import (
 )
 
 func (app App) HandleHome(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
 	posts := model.GetAllPosts()
 
 	if err := pages.Home(posts).Render(r.Context(), w); err != nil {

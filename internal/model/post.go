@@ -81,8 +81,13 @@ func postFromMeta(meta map[string]interface{}) (*Post, error) {
 	}
 	newPost.Title = title
 
-	date, ok := meta["date"].(string)
-	if !ok || date == "" {
+	var date string
+	switch v := meta["date"].(type) {
+	case string:
+		date = v
+	case time.Time:
+		date = v.Format("2006-01-02") // ??? how would you convert a time.Time to a string?
+	default:
 		return nil, errors.New("post date is required")
 	}
 	parsedDate, err := time.Parse("2006-01-02", date)
@@ -105,7 +110,7 @@ func postFromMeta(meta map[string]interface{}) (*Post, error) {
 
 	author, ok := meta["author"].(string)
 	if !ok || author == "" {
-		return nil, errors.New("author are required")
+		return nil, errors.New("author is required")
 	}
 	newPost.Author = author
 

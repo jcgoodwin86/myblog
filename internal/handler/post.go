@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/jcgoodwin/myblog/internal/model"
@@ -19,10 +20,16 @@ func (app App) HandlePost(w http.ResponseWriter, r *http.Request) {
 
 	postData, err := model.LoadPost(slug)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Println(err)
+		if os.IsNotExist(err) {
+			http.NotFound(w, r)
+		} else {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	}
 
-	pages.Post(*postData).Render(r.Context(), w)
+	if err := pages.Post(*postData).Render(r.Context(), w); err != nil {
+		http.Error(w, "Error rendering template", http.StatusInternalServerError)
+	}
 }
