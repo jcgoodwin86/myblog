@@ -8,9 +8,6 @@ import (
 
 templ Post(postData model.Post) {
 	@layout.Layout(postData.Title) {
-		<header slot="main-header">
-			<h1 style="margin: 0 auto">{ postData.Title }</h1>
-		</header>
 		<main>
 			<div style="max-width: 105ch; margin: 0 auto">
 				<article>

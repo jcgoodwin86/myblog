@@ -9,6 +9,8 @@ tags:
 author: "Joe Goodwin"
 ---
 
+# Markdown Kitchen Sink
+
 A quick sanity-check post. If everything renders correctly, you're good to ship.
 
 ---
