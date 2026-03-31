@@ -1,0 +1,176 @@
+---
+  Project Review: myblog
+
+  Overall Assessment
+
+  A clean, focused blog server. The architecture is sensible and the signal-to-noise ratio in the code is high. Most of the issues below are bugs or
+  gaps, not structural problems.
+
+  ---
+  What's Working Well
+
+  Goldmark — centralised and intentional (internal/render/markdown.go)
+  Single package-level var Markdown instance. Extensions are explicitly chosen: meta, table, footnote, strikethrough, and Chroma highlighting.
+  Nothing is scattered across handlers. Good.
+
+  Caching — correct approach (internal/model/post.go)
+  LoadAllPosts() is called at startup in main(), which pre-populates the in-memory cache. LoadPost checks the cache before touching disk. For a blog,
+   this is exactly right — no per-request disk I/O or Goldmark parsing.
+
+  Thread-safety (model/post.go:30–35)
+  postCache uses sync.RWMutex with proper read/write locking. Multiple concurrent readers won't block each other.
+
+  Handler thinness (handler/home.go, handler/post.go)
+  Handlers do exactly: get data → render template. No business logic leaking in.
+
+  Templ component structure
+  Clear three-tier layout: layout/base.templ → pages/*.templ → components/*.templ. Data is passed as typed structs (model.Post), not interface{}
+  maps. Composition via { children... } is used correctly in the base layout.
+
+  Path traversal protection (handler/post.go:16–19)
+  Slug is sanitised before being used to construct a file path. Minimal but appropriate for a controlled-content blog.
+
+  Server timeouts (main.go:37–40)
+  ReadTimeout and WriteTimeout are set. Many blog examples skip this.
+
+  Frontmatter schema (content/posts/*.md)
+  All posts use a consistent YAML frontmatter schema: title, date, tags, author, description. Validation in postFromMeta is strict and returns clear
+  errors.
+
+  ---
+  Bugs & Issues
+
+  1. SetContentType middleware is broken — headers set after write
+
+  File: internal/middleware/setContentType.go:6–11
+
+  next.ServeHTTP(w, r)          // response is written here, status code sent
+  if w.Header().Get("Content-Type") == "" {
+      w.Header().Set("Content-Type", "text/html; charset=utf-8")  // too late
+  }
+
+  Once ServeHTTP has written the response body, the HTTP status line and headers have already been flushed. Calling w.Header().Set after that is a
+  no-op — Go will log a "superfluous response.WriteHeader call" warning. The middleware should set the default Content-Type before calling
+  next.ServeHTTP. As it stands, it does nothing useful.
+
+  This has low visible impact because Templ already sets Content-Type: text/html on its own, but the middleware is broken by design.
+
+  ---
+  2. LoadAllPosts does not filter by extension
+
+  File: internal/model/post.go:126–141
+
+  for _, entry := range entries {
+      fileName := entry.Name()
+      slug := strings.TrimSuffix(fileName, ".md")
+      _, err := LoadPost(slug)
+      ...
+  }
+
+  This iterates all entries in content/posts/ — including .DS_Store, subdirectories, or any non-.md file. On macOS this will crash the server at
+  startup when Finder creates its metadata file. There is also no entry.IsDir() check.
+
+  ---
+  3. Nav links to unregistered routes
+
+  File: templates/components/nav.templ:6–8
+
+  <li><a href="/about">About</a></li>
+  <li><a href="/contact">Contact</a></li>
+
+  No handlers for /about or /contact are registered in main.go. Both links return 404.
+
+  ---
+  4. Duplicate href construction in postcard.templ, one unguarded
+
+  File: templates/components/postcard.templ:10,18
+
+  Line 10 uses bare string concatenation:
+  <h3 ...><a href={ "/posts/" + post.Slug } ...>
+
+  Line 18 uses templ.SafeURL:
+  <a href={ templ.SafeURL("/posts/" + post.Slug) } ...>
+
+  The slug comes from a filename on disk, so in practice it's safe — but the inconsistency is a code smell. The h3 link should also use
+  templ.SafeURL.
+
+  ---
+  5. GFM task list extension not enabled, but used in content
+
+  File: internal/render/markdown.go, content/posts/markdown-test-post.md:74–78
+
+  The markdown test post uses task list syntax (- [x], - [ ]). Goldmark does not render these as checkboxes without extension.GFM or
+  extension.TaskList. They will render as plain list items with literal [x] and [ ] text.
+
+  ---
+  6. LoadAllPosts is all-or-nothing — one bad post kills the server
+
+  File: internal/model/post.go:135–138
+
+  if err != nil {
+      return err   // propagates to log.Fatal in main
+  }
+
+  A single post with malformed frontmatter (missing title, bad date, etc.) will prevent the server from starting at all. For a dev blog this is
+  manageable, but worth being aware of.
+
+  ---
+  7. Confusing comment in postFromMeta
+
+  File: internal/model/post.go:89
+
+  case time.Time:
+      date = v.Format("2006-01-02") // ??? how would you convert a time.Time to a string?
+
+  The comment reads as a question, but the code on the same line answers it. This is harmless but should be cleaned up to avoid confusion.
+
+  ---
+  Goldmark Pipeline Notes
+
+  ┌──────────────────────────┬─────────────────────────────────────────────────────────────────────┐
+  │         Concern          │                               Status                                │
+  ├──────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Centralised config       │ Yes — internal/render/markdown.go                                   │
+  ├──────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Parse at request time?   │ No — preloaded at startup, cached                                   │
+  ├──────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+  │ XSS risk from templ.Raw? │ Acceptable — source is trusted filesystem-only markdown             │
+  ├──────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Chroma style pinned?     │ No — catppuccin-latte is commented out; unstyled inline styles used │
+  ├──────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Task list support        │ Missing extension.TaskList or extension.GFM                         │
+  ├──────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Raw HTML passthrough     │ Not enabled in Goldmark (safe default)                              │
+  └──────────────────────────┴─────────────────────────────────────────────────────────────────────┘
+
+  WithClasses(false) means Chroma emits inline style= attributes instead of CSS classes. This works without a separate stylesheet but increases HTML
+  payload per code block. Not a bug, just a trade-off to be aware of if you want to theme code blocks via CSS later.
+
+  ---
+  Markdown Content
+
+  Frontmatter is consistent across all three posts. postFromMeta validates all five required fields and returns specific errors for each. The date
+  handling correctly accounts for goldmark-meta sometimes returning a time.Time directly from YAML date values.
+
+  Content directory structure (content/posts/) is flat and simple — fine for the current scale.
+
+  ---
+  Summary of Issues by Priority
+
+  ┌──────────┬─────────────────────────────────────────────────────────────────────┐
+  │ Priority │                                Issue                                │
+  ├──────────┼─────────────────────────────────────────────────────────────────────┤
+  │ High     │ SetContentType middleware sets headers after write — broken         │
+  ├──────────┼─────────────────────────────────────────────────────────────────────┤
+  │ High     │ LoadAllPosts doesn't filter by .md extension — crashes on .DS_Store │
+  ├──────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Medium   │ Nav links /about and /contact return 404                            │
+  ├──────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Medium   │ extension.TaskList missing — task lists render as plain text        │
+  ├──────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Low      │ postcard.templ h3 link doesn't use templ.SafeURL                    │
+  ├──────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Low      │ LoadAllPosts fatal on first parse error                             │
+  ├──────────┼─────────────────────────────────────────────────────────────────────┤
+  │ Trivial  │ Confusing ??? comment in postFromMeta                               │
+  └──────────┴─────────────────────────────────────────────────────────────────────┘
