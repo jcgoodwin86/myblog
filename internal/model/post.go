@@ -114,11 +114,11 @@ func postFromMeta(meta map[string]interface{}) (*Post, error) {
 	}
 	newPost.Author = author
 
-	// optional fields
 	description, ok := meta["description"].(string)
-	if ok {
-		newPost.Description = description
+	if !ok || description == "" {
+		return nil, errors.New("description is required")
 	}
+	newPost.Description = description
 
 	return &newPost, nil
 }
