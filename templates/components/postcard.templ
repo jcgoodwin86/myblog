@@ -7,7 +7,7 @@ templ Card(post model.Post) {
 		<section class="wa-stack wa-gap-xs">
 			<span class="wa-caption-s">{ post.Date.Format("January 2, 2006") }</span>
 			<div class="wa-flex-wrap wa-gap-s wa-align-items-stretch">
-				<h3 class="wa-heading-2xl" style="margin: 0"><a href={ "/posts/" + post.Slug } class="wa-link-plain">{ post.Title }</a></h3>
+				<h3 class="wa-heading-2xl" style="margin: 0"><a href={ templ.SafeURL("/posts/" + post.Slug) } class="wa-link-plain">{ post.Title }</a></h3>
 			</div>
 			<span class="wa-caption-s">
 				by

@@ -86,7 +86,7 @@ func postFromMeta(meta map[string]interface{}) (*Post, error) {
 	case string:
 		date = v
 	case time.Time:
-		date = v.Format("2006-01-02") // ??? how would you convert a time.Time to a string?
+		date = v.Format("2006-01-02")
 	default:
 		return nil, errors.New("post date is required")
 	}
