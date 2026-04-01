@@ -131,10 +131,12 @@ func LoadAllPosts() error {
 
 	for _, entry := range entries {
 		fileName := entry.Name()
-		slug := strings.TrimSuffix(fileName, ".md")
-		_, err := LoadPost(slug)
-		if err != nil {
-			return err
+		if !entry.IsDir() && strings.HasSuffix(fileName, ".md") {
+			slug := strings.TrimSuffix(fileName, ".md")
+			_, err := LoadPost(slug)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
