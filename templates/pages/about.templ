@@ -1,0 +1,27 @@
+package pages
+
+import "github.com/jcgoodwin/myblog/templates/layout"
+
+templ About() {
+	@layout.Layout("About") {
+		<main class="home_main">
+			<div class="wa-stack wa-gap-2xl" style="max-width: 60ch; margin: 0 auto;">
+				<section class="about">
+					<h1>About</h1>
+					<h2>Yo, I'm Joe.</h2>
+					<p>Since 1996, I've been playing in this virtual world called the internet and breaking the family computer ever since. Over the past couple of years, I've focused on web development. I started on the frontend with <abbr title="HyperText Markup Language">HTML</abbr>, JavaScript, <abbr title="Cascading Style Sheets">CSS</abbr>, and React. For the past year, I concentrated on the backend with Go, learning with <a href="https://boot.dev" rel="noopener noreferrer" target="_blank">boot.dev</a>.</p>
+					<p>This blog is where I'm going to fail in public, because that's what we're supposed to do, right? It's built with Go using <code>net/http</code>. I've focused on building it mostly from scratch to understand more of the process, and it's a work in progress.</p>
+					<p>I've become a little obsessed with self-hosting on my home server. I'm scouring the internet for apps to replace my subscription ones. I'm hosting <a href="https://immich.app" rel="noopener noreferrer" target="_blank">Immich</a>, <a href="https://www.journiv.com/" rel="noopener noreferrer" target="_blank">Journiv</a>, <a href="https://www.seafile.com" rel="noopener noreferrer" target="_blank">Seafile</a>, Minecraft, and <a href="https://karakeep.app/" rel="noopener noreferrer" target="_blank">Karakeep</a>. My setup uses <a href="https://nixos.org" rel="noopener noreferrer" target="_blank">NixOS</a> with <a href="https://caddyserver.com" rel="noopener noreferrer" target="_blank">Caddy</a> and Docker.</p>
+					<p>I'm open to backend/fullstack roles. Find me at <a href="https://github.com/jcgoodwin86" rel="noopener noreferrer" target="_blank">github.com/jcgoodwin86</a>.</p>
+					<footer class="about__sign-off">
+						<p>
+							Cya ✌🏼,
+							<br/>
+							<strong>Joe G</strong>
+						</p>
+					</footer>
+				</section>
+			</div>
+		</main>
+	}
+}
