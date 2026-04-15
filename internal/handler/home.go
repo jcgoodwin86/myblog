@@ -12,9 +12,11 @@ func (app App) HandleHome(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	posts := model.GetAllPosts()
 
-	if err := pages.Home(posts).Render(r.Context(), w); err != nil {
+	posts := model.GetAllPosts()
+	canonical := "https://oddcodeout.io" + r.URL.Path
+
+	if err := pages.Home(posts, canonical).Render(r.Context(), w); err != nil {
 		http.Error(w, "Error rendering template", http.StatusInternalServerError)
 	}
 }

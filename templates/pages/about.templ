@@ -2,8 +2,8 @@ package pages
 
 import "github.com/jcgoodwin/myblog/templates/layout"
 
-templ About() {
-	@layout.Layout("About") {
+templ About(canonical string) {
+	@layout.Layout("About", "Learn about Joe Goodwin — a web developer learning Go by building this blog from scratch, in public.", canonical, nil) {
 		<main class="home_main">
 			<div class="wa-stack wa-gap-2xl" style="max-width: 60ch; margin: 0 auto;">
 				<section class="about">

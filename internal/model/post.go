@@ -21,6 +21,7 @@ type Post struct {
 	Slug        string
 	Title       string
 	Date        time.Time
+	UpdatedAt   time.Time
 	Description string
 	Tags        []string
 	Author      string
@@ -95,6 +96,26 @@ func postFromMeta(meta map[string]interface{}) (*Post, error) {
 		return nil, fmt.Errorf("invalid date format: %w", err)
 	}
 	newPost.Date = parsedDate
+
+	value, ok := meta["update"]
+	if ok {
+		var date string
+		switch v := value.(type) {
+		case string:
+			date = v
+		case time.Time:
+			date = v.Format("2006-01-02")
+		default:
+			return nil, errors.New("post date is required")
+		}
+		parsedDate, err := time.Parse("2006-01-02", date)
+		if err != nil {
+			return nil, fmt.Errorf("invalid date format: %w", err)
+		}
+		newPost.UpdatedAt = parsedDate
+	} else {
+		newPost.UpdatedAt = newPost.Date
+	}
 
 	rawTags, ok := meta["tags"].([]interface{})
 	if !ok || len(rawTags) == 0 {

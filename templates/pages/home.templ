@@ -4,8 +4,8 @@ import "github.com/jcgoodwin/myblog/templates/layout"
 import "github.com/jcgoodwin/myblog/templates/components"
 import "github.com/jcgoodwin/myblog/internal/model"
 
-templ Home(posts []*model.Post) {
-	@layout.Layout("Home") {
+templ Home(posts []*model.Post, canonical string) {
+	@layout.Layout("Home", "A developer blog about web development, building in public, and writing code worth reading.", canonical, nil) {
 		<main class="home_main">
 			<div class="wa-stack wa-gap-2xl" style="max-width: 60ch; margin: 0 auto;">
 				for _, post := range posts {

@@ -2,8 +2,8 @@ package pages
 
 import "github.com/jcgoodwin/myblog/templates/layout"
 
-templ Contact() {
-	@layout.Layout("Contact") {
+templ Contact(canonical string) {
+	@layout.Layout("Contact", "Get in touch with Joe Goodwin — always happy to talk code, projects, or opportunities.", canonical, nil) {
 		<main class="home_main">
 			<div class="wa-stack wa-gap-2xl" style="max-width: 60ch; margin: 0 auto;">
 				<p>Empty for now</p>

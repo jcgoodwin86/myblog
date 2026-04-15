@@ -1,6 +1,7 @@
 ---
 title: "Markdown Kitchen Sink"
 date: 2026-03-14
+update: 2026-03-20
 description: "A test post covering every markdown element to validate rendering, syntax highlighting, and styles."
 tags: 
   - test 

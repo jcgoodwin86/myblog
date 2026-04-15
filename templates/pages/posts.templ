@@ -4,10 +4,11 @@ import (
 	"github.com/jcgoodwin/myblog/internal/model"
 	"github.com/jcgoodwin/myblog/templates/components"
 	"github.com/jcgoodwin/myblog/templates/layout"
+	"time"
 )
 
 templ Post(postData model.Post) {
-	@layout.Layout(postData.Title) {
+	@layout.Layout(postData.Title, postData.Description, "https://oddcodeout.io/posts/"+postData.Slug, PostMeta(postData)) {
 		<main>
 			<div style="max-width: 105ch; margin: 0 auto">
 				<article>
@@ -16,4 +17,17 @@ templ Post(postData model.Post) {
 			</div>
 		</main>
 	}
+}
+
+templ PostMeta(postData model.Post) {
+	<meta property="og:title" content={ postData.Title }/>
+	<meta property="og:description" content={ postData.Description }/>
+	<meta property="og:url" content={ "https://oddcodeout.io/posts/" + postData.Slug }/>
+	<meta property="og:type" content="article"/>
+	// <meta property="og:image" content="https://oddcodeout.io/static/images/my-post.jpg"/>
+	<meta property="article:published_time" content={ postData.Date.Format(time.RFC3339) }/>
+	<meta property="article:modified_time" content={ postData.UpdatedAt.Format(time.RFC3339) }/>
+	<meta name="twitter:card" content="summary"/>
+	<meta name="twitter:title" content={ postData.Title }/>
+	<meta name="twitter:description" content={ postData.Description }/>
 }

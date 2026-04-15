@@ -7,7 +7,8 @@ import (
 )
 
 func (app App) HandleContact(w http.ResponseWriter, r *http.Request) {
-	if err := pages.Contact().Render(r.Context(), w); err != nil {
+	canonical := "https://oddcodeout.io" + r.URL.Path
+	if err := pages.Contact(canonical).Render(r.Context(), w); err != nil {
 		http.Error(w, "Error rendering template", http.StatusInternalServerError)
 	}
 }
