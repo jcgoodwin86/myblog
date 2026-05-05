@@ -33,6 +33,9 @@ func main() {
 	mux.HandleFunc("GET /about", app.HandleAbout)
 	mux.HandleFunc("GET /contact", app.HandleContact)
 	mux.HandleFunc("GET /posts/{slug}", app.HandlePost)
+	mux.HandleFunc("GET /robots.txt", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "static/robots.txt")
+	})
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	srv := &http.Server{
